@@ -25,15 +25,12 @@ local setmetatable = setmetatable
 local math         = math
 local wibox        = require('wibox'       )
 local color        = require('gears.color' )
-local cairo        = require('lgi'         )
-local pango        = require('lgi'         ).Pango
-local pangocairo   = require('lgi'         ).PangoCairo
 local awful        = require('awful'       )
 local gtable       = require('gears.table' )
 local gstring      = require('gears.string')
-local dpi          = require('beautiful'   ).xresources.apply_dpi
 local naughty      = require('naughty'     )
 local beautiful    = require('beautiful'   )
+local dp           = require('dbus_proxy'  )
 -- }}}
 
 local bt = {}
@@ -92,6 +89,11 @@ end
 local function new(args)
    local obj = wibox.widget.base.empty_widget()
    gtable.crush(obj, bt, true)
+
+   obj._bluezObjMgr = dp.Proxy:new( { bus       = dp.Bus.SYSTEM,
+                                    name      = "org.bluez",
+                                    interface = "org.bluez.ObjectManager",
+                                    path      = "/" })
 
    local args = args or {}
 
